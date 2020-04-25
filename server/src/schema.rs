@@ -8,7 +8,7 @@ table! {
 table! {
     tweets (id) {
         id -> Varchar,
-        tweet_id -> Nullable<Varchar>,
+        tweet_id -> Varchar,
         comment -> Varchar,
     }
 }
