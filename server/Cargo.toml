@@ -16,3 +16,7 @@ futures = "0.3.4"
 diesel = { version = "1.4.4", features = ["mysql", "r2d2"] }
 uuid = { version = "0.8.1", features = ["v4", "serde"] }
 dotenv = "0.15.0"
+
+[dev-dependencies]
+diesel = { version = "1.4.4", features = ["sqlite", "mysql", "r2d2"] }
+diesel_migrations = "1.4.0"
