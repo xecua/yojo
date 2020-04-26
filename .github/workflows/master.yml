@@ -1,0 +1,38 @@
+name: master
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql
+        env:
+          MYSQL_ROOT_PASSWORD: root
+        ports:
+        - 3306
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup
+      env:
+        DATABASE_URL: "mysql://root:root@127.0.0.1/test"
+        RUST_LOG: debug
+      run: |
+        sudo apt update
+        sudo apt install -y libmysqlclient-dev
+        diesel setup
+        diesel migration run
+    - name: Build
+      run: cargo build --verbose
+      env:
+        DATABASE_URL: "mysql://root:root@127.0.0.1/test"
+        RUST_LOG: debug
+    - name: Run tests
+      run: cargo test --verbose
+
