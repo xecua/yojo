@@ -255,7 +255,7 @@ fn link_tweet_and_tags() {
 
 #[test]
 fn get_links_tweets_to_tag() {
-    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, get_linked_tweets_to_tag};
+    use crate::actions::{get_linked_tweets_to_tag, insert_tag, insert_tweet, link_tweet_and_tags};
     dotenv::dotenv().ok();
     let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
     let conn = DBConnection::establish(&database_url).unwrap();
@@ -272,32 +272,20 @@ fn get_links_tweets_to_tag() {
         link_tweet_and_tags(&tweet1.id, vec![&tag1.id, &tag2.id, &tag3.id], &conn)?;
         link_tweet_and_tags(&tweet2.id, vec![&tag1.id, &tag3.id, &tag4.id], &conn)?;
         link_tweet_and_tags(&tweet3.id, vec![&tag3.id, &tag5.id], &conn)?;
+        // 最小限
+        assert_eq!(2, get_linked_tweets_to_tag(&tag1.id, &conn)?.len());
 
-        let mut get = get_linked_tweets_to_tag(&tag1.id, &conn)?;
-        get.sort_by(|left, right| left.comment.cmp(&right.comment));
-        assert_eq!(2, get.len());
-        assert_eq!(tweet1, get[0]);
-        assert_eq!(tweet2, get[1]);
-
-        let mut get = get_linked_tweets_to_tag(&tag2.id, &conn)?;
-        get.sort_by(|left, right| left.comment.cmp(&right.comment));
+        let get = get_linked_tweets_to_tag(&tag2.id, &conn)?;
         assert_eq!(1, get.len());
         assert_eq!(tweet1, get[0]);
 
-        let mut get = get_linked_tweets_to_tag(&tag3.id, &conn)?;
-        get.sort_by(|left, right| left.comment.cmp(&right.comment));
-        assert_eq!(3, get.len());
-        assert_eq!(tweet1, get[0]);
-        assert_eq!(tweet2, get[1]);
-        assert_eq!(tweet3, get[2]);
+        assert_eq!(3, get_linked_tweets_to_tag(&tag3.id, &conn)?.len());
 
-        let mut get = get_linked_tweets_to_tag(&tag4.id, &conn)?;
-        get.sort_by(|left, right| left.comment.cmp(&right.comment));
+        let get = get_linked_tweets_to_tag(&tag4.id, &conn)?;
         assert_eq!(1, get.len());
         assert_eq!(tweet2, get[0]);
 
-        let mut get = get_linked_tweets_to_tag(&tag5.id, &conn)?;
-        get.sort_by(|left, right| left.comment.cmp(&right.comment));
+        let get = get_linked_tweets_to_tag(&tag5.id, &conn)?;
         assert_eq!(1, get.len());
         assert_eq!(tweet3, get[0]);
 
@@ -307,7 +295,7 @@ fn get_links_tweets_to_tag() {
 
 #[test]
 fn get_linked_tags_to_tweet() {
-    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, get_linked_tags_to_tweet};
+    use crate::actions::{get_linked_tags_to_tweet, insert_tag, insert_tweet, link_tweet_and_tags};
     dotenv::dotenv().ok();
     let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
     let conn = DBConnection::establish(&database_url).unwrap();
@@ -351,7 +339,7 @@ fn get_linked_tags_to_tweet() {
 
 #[test]
 fn get_tweets_to_tags() {
-    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, get_tweets_to_tags};
+    use crate::actions::{get_tweets_to_tags, insert_tag, insert_tweet, link_tweet_and_tags};
     dotenv::dotenv().ok();
     let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
     let conn = DBConnection::establish(&database_url).unwrap();
@@ -369,43 +357,7 @@ fn get_tweets_to_tags() {
         link_tweet_and_tags(&tweet2.id, vec![&tag1.id, &tag3.id, &tag4.id], &conn)?;
         link_tweet_and_tags(&tweet3.id, vec![&tag3.id, &tag5.id], &conn)?;
 
-        let mut tweets = vec![tweet1, tweet2, tweet3];
-        tweets.sort_by(|left, right| left.id.cmp(&right.id));
-        let mut tags = vec![tag1, tag2, tag3, tag4, tag5];
-        tags.sort_by(|left, right| left.id.cmp(&right.id));
-
-        let get = get_tweets_to_tags(&conn)?;
-        assert_eq!(15, get.len());
-        assert_eq!(tweets[0].id, get[0].tweets_id);
-        assert_eq!(tags[0].id, get[0].tags_id);
-        assert_eq!(tweets[0].id, get[1].tweets_id);
-        assert_eq!(tags[1].id, get[1].tags_id);
-        assert_eq!(tweets[0].id, get[2].tweets_id);
-        assert_eq!(tags[2].id, get[2].tags_id);
-        assert_eq!(tweets[0].id, get[3].tweets_id);
-        assert_eq!(tags[3].id, get[3].tags_id);
-        assert_eq!(tweets[0].id, get[4].tweets_id);
-        assert_eq!(tags[4].id, get[4].tags_id);
-        assert_eq!(tweets[1].id, get[5].tweets_id);
-        assert_eq!(tags[0].id, get[5].tags_id);
-        assert_eq!(tweets[1].id, get[6].tweets_id);
-        assert_eq!(tags[1].id, get[6].tags_id);
-        assert_eq!(tweets[1].id, get[7].tweets_id);
-        assert_eq!(tags[2].id, get[7].tags_id);
-        assert_eq!(tweets[1].id, get[8].tweets_id);
-        assert_eq!(tags[3].id, get[8].tags_id);
-        assert_eq!(tweets[1].id, get[9].tweets_id);
-        assert_eq!(tags[4].id, get[9].tags_id);
-        assert_eq!(tweets[2].id, get[10].tweets_id);
-        assert_eq!(tags[0].id, get[10].tags_id);
-        assert_eq!(tweets[2].id, get[11].tweets_id);
-        assert_eq!(tags[1].id, get[11].tags_id);
-        assert_eq!(tweets[2].id, get[12].tweets_id);
-        assert_eq!(tags[2].id, get[12].tags_id);
-        assert_eq!(tweets[2].id, get[13].tweets_id);
-        assert_eq!(tags[3].id, get[13].tags_id);
-        assert_eq!(tweets[2].id, get[14].tweets_id);
-        assert_eq!(tags[4].id, get[14].tags_id);
+        assert_eq!(8, get_tweets_to_tags(&conn)?.len()); // 最小限
 
         Ok(())
     });
