@@ -31,7 +31,7 @@ pub fn select_tweet_by_tweet_id(tweet_id_: &str, conn: &DBConnection) -> QueryRe
 
 pub fn select_tweets(conn: &DBConnection) -> QueryResult<Vec<Tweet>> {
     use schema::tweets::dsl::*;
-    tweets.load(conn)
+    tweets.order(id.asc()).load(conn)
 }
 
 pub fn insert_tag(tag_: &str, conn: &DBConnection) -> QueryResult<Tag> {
@@ -59,10 +59,10 @@ pub fn select_tag_by_content(content: &str, conn: &DBConnection) -> QueryResult<
 
 pub fn predict_tag(query: &str, conn: &DBConnection) -> QueryResult<Vec<Tag>> {
     use schema::tags::dsl::*;
-    tags.filter(tag.like(format!("{}%", query))).load(conn)
+    tags.filter(tag.like(format!("{}%", query))).order(id.asc()).load(conn)
 }
 
 pub fn select_tags(conn: &DBConnection) -> QueryResult<Vec<Tag>> {
     use schema::tags::dsl::*;
-    tags.load(conn)
+    tags.order(id.asc()).load(conn)
 }
