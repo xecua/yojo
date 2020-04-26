@@ -1,4 +1,5 @@
 mod actions;
+mod services;
 
 mod example_check {
     // https://docs.diesel.rs/diesel/connection/trait.Connection.html#example-1
