@@ -42,11 +42,13 @@ fn select_tweets() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let inserted = vec![
-            insert_tweet("1293467236978", "comment", &conn)?,
-            insert_tweet("1237831", "にほんご", &conn)?,
+        let mut inserted = vec![
             insert_tweet("22", "", &conn)?,
+            insert_tweet("1237831", "にほんご", &conn)?,
+            insert_tweet("1293467236978", "comment", &conn)?,
         ];
+        inserted.sort_by(|left, right| left.id.cmp(&right.id));
+
         let selected = select_tweets(&conn)?;
 
         assert_eq!(inserted, selected);
@@ -157,24 +159,26 @@ fn predict_tag() {
 
     conn.test_transaction::<_, Error, _>(|| {
         insert_tag("f", &conn)?;
+        insert_tag("fizz", &conn)?;
         insert_tag("fo", &conn)?;
         insert_tag("foo", &conn)?;
-        insert_tag("for", &conn)?;
         insert_tag("foo_bar", &conn)?;
-        insert_tag("fizz", &conn)?;
+        insert_tag("for", &conn)?;
 
-        let predicted = predict_tag("f", &conn)?;
+        let mut predicted = predict_tag("f", &conn)?;
+        predicted.sort_by(|left, right| left.tag.cmp(&right.tag));
         assert_eq!(
-            vec!["f", "fo", "foo", "for", "foo_bar", "fizz"],
+            vec!["f", "fizz", "fo", "foo", "foo_bar", "for"],
             predicted
                 .iter()
                 .map(|x| x.tag.to_string())
                 .collect::<Vec<String>>()
         );
 
-        let predicted = predict_tag("fo", &conn)?;
+        let mut predicted = predict_tag("fo", &conn)?;
+        predicted.sort_by(|left, right| left.tag.cmp(&right.tag));
         assert_eq!(
-            vec!["fo", "foo", "for", "foo_bar"],
+            vec!["fo", "foo", "foo_bar", "for"],
             predicted
                 .iter()
                 .map(|x| x.tag.to_string())
@@ -184,7 +188,8 @@ fn predict_tag() {
         let predicted = predict_tag("for", &conn)?;
         assert_eq!("for", predicted[0].tag);
 
-        let predicted = predict_tag("foo", &conn)?;
+        let mut predicted = predict_tag("foo", &conn)?;
+        predicted.sort_by(|left, right| left.tag.cmp(&right.tag));
         assert_eq!(
             vec!["foo", "foo_bar"],
             predicted
@@ -215,11 +220,12 @@ fn select_tags() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let inserted = vec![
+        let mut inserted = vec![
             insert_tag("tag1", &conn)?,
             insert_tag("タグ", &conn)?,
             insert_tag("", &conn)?,
         ];
+        inserted.sort_by(|left, right| left.id.cmp(&right.id));
         let selected = select_tags(&conn)?;
         assert_eq!(inserted, selected);
         Ok(())
