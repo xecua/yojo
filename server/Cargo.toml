@@ -1,5 +1,5 @@
 [package]
-name = "yojo"
+name = "server"
 version = "0.1.0"
 authors = ["xecua <courser4848@gmail.com>"]
 edition = "2018"

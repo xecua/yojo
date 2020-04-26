@@ -13,4 +13,4 @@ mod tests;
 extern crate diesel_migrations;
 
 pub type DBConnection = diesel::mysql::MysqlConnection;
-pub type Pool = diesel::r2d2::Pool<diesel::r2d2::ConnectionManager<DBConnection>>;
+type Pool = diesel::r2d2::Pool<diesel::r2d2::ConnectionManager<DBConnection>>;
