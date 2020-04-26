@@ -1,10 +1,10 @@
 #[macro_use]
 extern crate diesel;
 
-pub mod actions;
-pub mod services;
+mod actions;
 pub mod models;
 mod schema;
+pub mod services;
 
 #[cfg(test)]
 mod tests;

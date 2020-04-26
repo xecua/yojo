@@ -66,3 +66,23 @@ pub fn select_tags(conn: &DBConnection) -> QueryResult<Vec<Tag>> {
     use schema::tags::dsl::*;
     tags.order(id.asc()).load(conn)
 }
+
+// link inserted records(insert tweets_to_tags)
+pub fn link_tweet_and_tags(tweet_id: &str, tag_ids: Vec<&str>, conn: &DBConnection) -> QueryResult<Vec<TweetToTag>> {
+    unimplemented!()
+}
+
+// select tweets_to_tags by tags_id
+pub fn get_linked_tweets_to_tag(tag_id: &str, conn: &DBConnection) -> QueryResult<Vec<Tweet>> {
+    unimplemented!()
+}
+
+// select tweets_to_tags by tweets_id
+pub fn get_linked_tags_to_tweet(tweet_id: &str, conn: &DBConnection) -> QueryResult<Vec<Tag>> {
+    unimplemented!()
+}
+
+// would used with select_tweets/select_tags (to avoid N+1)
+pub fn get_tweets_to_tags(conn: &DBConnection) -> QueryResult<Vec<TweetToTag>> {
+    unimplemented!()
+}
