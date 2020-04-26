@@ -19,34 +19,50 @@ pub fn insert_tweet(tweet_id_: &str, comment_: &str, conn: &DBConnection) -> Que
     Ok(tweet)
 }
 
-pub fn select_tweet_by_id(id: &str, conn: &DBConnection) -> QueryResult<Tweet> {
-    unimplemented!()
+pub fn select_tweet_by_id(id_: &str, conn: &DBConnection) -> QueryResult<Tweet> {
+    use schema::tweets::dsl::*;
+    tweets.filter(id.eq(id_)).first(conn)
 }
 
-pub fn select_tweet_by_tweet_id(tweet_id: &str, conn: &DBConnection) -> QueryResult<Tweet> {
-    unimplemented!()
+pub fn select_tweet_by_tweet_id(tweet_id_: &str, conn: &DBConnection) -> QueryResult<Tweet> {
+    use schema::tweets::dsl::*;
+    tweets.filter(tweet_id.eq(tweet_id_)).first(conn)
 }
 
 pub fn select_tweets(conn: &DBConnection) -> QueryResult<Vec<Tweet>> {
-    unimplemented!()
+    use schema::tweets::dsl::*;
+    tweets.load(conn)
 }
 
 pub fn insert_tag(tag_: &str, conn: &DBConnection) -> QueryResult<Tag> {
-    unimplemented!()
+    use schema::tags::dsl::*;
+
+    let new_tag = Tag {
+        id: uuid::Uuid::new_v4().to_string(),
+        tag: tag_.to_string()
+    };
+
+    diesel::insert_into(tags).values(&new_tag).execute(conn)?;
+
+    Ok(new_tag)
 }
 
-pub fn select_tag_by_id(id: &str, conn: &DBConnection) -> QueryResult<Tag> {
-    unimplemented!()
+pub fn select_tag_by_id(id_: &str, conn: &DBConnection) -> QueryResult<Tag> {
+    use schema::tags::dsl::*;
+    tags.filter(id.eq(id_)).first(conn)
 }
 
 pub fn select_tag_by_content(content: &str, conn: &DBConnection) -> QueryResult<Tag> {
-    unimplemented!()
+    use schema::tags::dsl::*;
+    tags.filter(tag.eq(content)).first(conn)
 }
 
 pub fn predict_tag(query: &str, conn: &DBConnection) -> QueryResult<Vec<Tag>> {
-    unimplemented!()
+    use schema::tags::dsl::*;
+    tags.filter(tag.like(format!("{}%", query))).load(conn)
 }
 
 pub fn select_tags(conn: &DBConnection) -> QueryResult<Vec<Tag>> {
-    unimplemented!()
+    use schema::tags::dsl::*;
+    tags.load(conn)
 }
