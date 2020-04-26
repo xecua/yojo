@@ -119,3 +119,6 @@ pub fn get_tweets_to_tags(conn: &DBConnection) -> QueryResult<Vec<TweetToTag>> {
         .then_order_by(tags_id.asc())
         .load(conn)
 }
+
+// TODO: UPDATE, DELETE functions
+// note: on update, tweets_to_tags will also be updated
