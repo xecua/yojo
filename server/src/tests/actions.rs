@@ -11,11 +11,11 @@ fn insert_tweet() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let inserted1 = insert_tweet("1", "", &conn)?;
+        let inserted1 = insert_tweet("1", "", "", &conn)?;
         assert_eq!("1", inserted1.tweet_id);
         assert_eq!("", inserted1.comment);
 
-        let inserted2 = insert_tweet("28049837402", "にほんご", &conn)?;
+        let inserted2 = insert_tweet("28049837402", "にほんご", "", &conn)?;
         assert_eq!("28049837402", inserted2.tweet_id);
         assert_eq!("にほんご", inserted2.comment);
 
@@ -23,7 +23,7 @@ fn insert_tweet() {
         // POST -> insert_tweet, PATCH -> update_tweet
         // tweet_idが重複したらUniqueViolationになるのでそのままエラーを返す
         // 情報取り出したい...
-        let inserted3 = insert_tweet("28049837402", "ほげ", &conn);
+        let inserted3 = insert_tweet("28049837402", "ほげ", "", &conn);
         assert!(matches!(
             inserted3,
             Err(Error::DatabaseError(DatabaseErrorKind::UniqueViolation, _))
@@ -43,9 +43,9 @@ fn select_tweets() {
 
     conn.test_transaction::<_, Error, _>(|| {
         let mut inserted = vec![
-            insert_tweet("22", "", &conn)?,
-            insert_tweet("1237831", "にほんご", &conn)?,
-            insert_tweet("1293467236978", "comment", &conn)?,
+            insert_tweet("22", "", "", &conn)?,
+            insert_tweet("1237831", "にほんご", "", &conn)?,
+            insert_tweet("1293467236978", "comment", "", &conn)?,
         ];
         inserted.sort_by(|left, right| left.id.cmp(&right.id));
 
@@ -65,7 +65,7 @@ fn select_tweet_by_id() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let inserted = insert_tweet("28049837402", "コメント", &conn)?;
+        let inserted = insert_tweet("28049837402", "コメント", "", &conn)?;
         let selected = select_tweet_by_id(&inserted.id, &conn)?;
         assert_eq!(inserted, selected);
 
@@ -83,7 +83,7 @@ fn select_tweet_by_tweet_id() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let inserted = insert_tweet("20309485", "comment", &conn)?;
+        let inserted = insert_tweet("20309485", "comment", "", &conn)?;
         let selected = select_tweet_by_tweet_id("20309485", &conn)?;
         assert_eq!(inserted, selected);
 
@@ -261,9 +261,9 @@ fn get_links_tweets_to_tag() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let tweet1 = insert_tweet("1", "", &conn)?;
-        let tweet2 = insert_tweet("2", "", &conn)?;
-        let tweet3 = insert_tweet("3", "", &conn)?;
+        let tweet1 = insert_tweet("1", "", "", &conn)?;
+        let tweet2 = insert_tweet("2", "", "", &conn)?;
+        let tweet3 = insert_tweet("3", "", "", &conn)?;
         let tag1 = insert_tag("1", &conn)?;
         let tag2 = insert_tag("2", &conn)?;
         let tag3 = insert_tag("3", &conn)?;
@@ -301,9 +301,9 @@ fn get_linked_tags_to_tweet() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let tweet1 = insert_tweet("1", "", &conn)?;
-        let tweet2 = insert_tweet("2", "", &conn)?;
-        let tweet3 = insert_tweet("3", "", &conn)?;
+        let tweet1 = insert_tweet("1", "", "", &conn)?;
+        let tweet2 = insert_tweet("2", "", "", &conn)?;
+        let tweet3 = insert_tweet("3", "", "", &conn)?;
         let tag1 = insert_tag("1", &conn)?;
         let tag2 = insert_tag("2", &conn)?;
         let tag3 = insert_tag("3", &conn)?;
@@ -345,9 +345,9 @@ fn get_tweets_to_tags() {
     let conn = DBConnection::establish(&database_url).unwrap();
 
     conn.test_transaction::<_, Error, _>(|| {
-        let tweet1 = insert_tweet("1", "", &conn)?;
-        let tweet2 = insert_tweet("2", "", &conn)?;
-        let tweet3 = insert_tweet("3", "", &conn)?;
+        let tweet1 = insert_tweet("1", "", "", &conn)?;
+        let tweet2 = insert_tweet("2", "", "", &conn)?;
+        let tweet3 = insert_tweet("3", "", "", &conn)?;
         let tag1 = insert_tag("1", &conn)?;
         let tag2 = insert_tag("2", &conn)?;
         let tag3 = insert_tag("3", &conn)?;

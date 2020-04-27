@@ -4,13 +4,19 @@ use crate::schema;
 use crate::DBConnection;
 use diesel::prelude::*;
 
-pub fn insert_tweet(tweet_id_: &str, comment_: &str, conn: &DBConnection) -> QueryResult<Tweet> {
+pub fn insert_tweet(
+    tweet_id_: &str,
+    comment_: &str,
+    html_: &str,
+    conn: &DBConnection,
+) -> QueryResult<Tweet> {
     use schema::tweets::dsl::*;
 
     let tweet = Tweet {
         id: uuid::Uuid::new_v4().to_string(),
         tweet_id: tweet_id_.to_string(),
         comment: comment_.to_string(),
+        html: html_.to_string(),
     };
 
     diesel::insert_into(tweets).values(&tweet).execute(conn)?;
@@ -95,7 +101,7 @@ pub fn get_linked_tweets_to_tag(tag_id: &str, conn: &DBConnection) -> QueryResul
     let tag_ = tags.find(tag_id).first::<Tag>(conn)?;
     <TweetToTag as BelongingToDsl<&Tag>>::belonging_to(&tag_)
         .inner_join(tweets)
-        .select((schema::tweets::id, tweet_id, comment))
+        .select((schema::tweets::id, tweet_id, comment, html))
         .order(schema::tweets::id.asc())
         .load(conn)
 }
