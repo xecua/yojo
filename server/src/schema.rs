@@ -10,6 +10,7 @@ table! {
         id -> Varchar,
         tweet_id -> Varchar,
         comment -> Varchar,
+        html -> Varchar,
     }
 }
 
