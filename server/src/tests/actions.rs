@@ -1,6 +1,7 @@
 use crate::DBConnection;
 use diesel::prelude::*;
 use diesel::result::{DatabaseErrorKind, Error};
+use std::iter::Iterator;
 
 #[test]
 fn insert_tweet() {
@@ -88,6 +89,68 @@ fn select_tweet_by_tweet_id() {
         assert_eq!(inserted, selected);
 
         assert_eq!(Err(Error::NotFound), select_tweet_by_tweet_id("2", &conn));
+        Ok(())
+    });
+}
+
+#[test]
+fn select_tweet_simples() {
+    use crate::actions::{insert_tweet, select_tweet_simples};
+    use crate::models::TweetSimple;
+    dotenv::dotenv().ok();
+    let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
+    let conn = DBConnection::establish(&database_url).unwrap();
+
+    conn.test_transaction::<_, Error, _>(|| {
+        let mut inserted = vec![
+            insert_tweet("22", "", "", &conn)?,
+            insert_tweet("1237831", "にほんご", "", &conn)?,
+            insert_tweet("1293467236978", "comment", "", &conn)?,
+        ];
+        inserted.sort_by(|left, right| left.id.cmp(&right.id));
+        let selected = select_tweet_simples(&conn)?;
+        assert_eq!(vec![
+            TweetSimple { id: inserted[0].id, html: inserted[0].html },
+            TweetSimple { id: inserted[1].id, html: inserted[1].html },
+            TweetSimple { id: inserted[2].id, html: inserted[2].html },
+        ], selected);
+        Ok(())
+    });
+}
+
+#[test]
+fn select_tweet_details() {
+    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, select_tweet_details};
+    dotenv::dotenv().ok();
+    let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
+    let conn = DBConnection::establish(&database_url).unwrap();
+
+    conn.test_transaction::<_, Error, _>(|| {
+        let tweet1 = insert_tweet("1", "1", "1", &conn)?;
+        let tweet2 = insert_tweet("2", "2", "2", &conn)?;
+        let tweet3 = insert_tweet("3", "3", "3", &conn)?;
+        let tag1 = insert_tag("1", &conn)?;
+        let tag2 = insert_tag("2", &conn)?;
+        let tag3 = insert_tag("3", &conn)?;
+        let tag4 = insert_tag("4", &conn)?;
+        let tag5 = insert_tag("5", &conn)?;
+        link_tweet_and_tags(&tweet1.id, vec![&tag1.id, &tag2.id, &tag3.id], &conn)?;
+        link_tweet_and_tags(&tweet2.id, vec![&tag1.id, &tag3.id, &tag4.id], &conn)?;
+        link_tweet_and_tags(&tweet3.id, vec![&tag3.id, &tag5.id], &conn)?;
+        let selected = select_tweet_details(&conn)?;
+        assert_eq!(3, selected.len());
+        let one = selected.iter().find(|&&x| x.comment == "1").unwrap();
+        assert_eq!("1", one.html);
+        assert_eq!(tweet1.id, one.id);
+        assert_eq!(3, one.tags.len());
+        let two = selected.iter().find(|&&x| x.comment == "2").unwrap();
+        assert_eq!("2", one.html);
+        assert_eq!(tweet2.id, two.id);
+        assert_eq!(3, one.tags.len());
+        let three = selected.iter().find(|&&x| x.comment == "3").unwrap();
+        assert_eq!("3", one.html);
+        assert_eq!(tweet3.id, three.id);
+        assert_eq!(2, one.tags.len());
         Ok(())
     });
 }
@@ -228,6 +291,47 @@ fn select_tags() {
         inserted.sort_by(|left, right| left.id.cmp(&right.id));
         let selected = select_tags(&conn)?;
         assert_eq!(inserted, selected);
+        Ok(())
+    });
+}
+
+#[test]
+fn select_tag_details() {
+    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, select_tag_details};
+    dotenv::dotenv().ok();
+    let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
+    let conn = DBConnection::establish(&database_url).unwrap();
+
+    conn.test_transaction::<_, Error, _>(|| {
+        let tweet1 = insert_tweet("1", "", "", &conn)?;
+        let tweet2 = insert_tweet("2", "", "", &conn)?;
+        let tweet3 = insert_tweet("3", "", "", &conn)?;
+        let tag1 = insert_tag("1", &conn)?;
+        let tag2 = insert_tag("2", &conn)?;
+        let tag3 = insert_tag("3", &conn)?;
+        let tag4 = insert_tag("4", &conn)?;
+        let tag5 = insert_tag("5", &conn)?;
+        link_tweet_and_tags(&tweet1.id, vec![&tag1.id, &tag2.id, &tag3.id], &conn)?;
+        link_tweet_and_tags(&tweet2.id, vec![&tag1.id, &tag3.id, &tag4.id], &conn)?;
+        link_tweet_and_tags(&tweet3.id, vec![&tag3.id, &tag5.id], &conn)?;
+        let selected = select_tag_details(&conn)?;
+        assert_eq!(5, selected.len());
+        let one = selected.iter().find(|&&x| x.content == "1").unwrap();
+        assert_eq!(tag1.id, one.id);
+        assert_eq!(2, one.tweets.len());
+        let two = selected.iter().find(|&&x| x.content == "2").unwrap();
+        assert_eq!(tag2.id, two.id);
+        assert_eq!(1, two.tweets.len());
+        let three = selected.iter().find(|&&x| x.content == "3").unwrap();
+        assert_eq!(tag3.id, three.id);
+        assert_eq!(3, three.tweets.len());
+        let four = selected.iter().find(|&&x| x.content == "4").unwrap();
+        assert_eq!(tag4.id, four.id);
+        assert_eq!(1, four.tweets.len());
+        let five = selected.iter().find(|&&x| x.content == "5").unwrap();
+        assert_eq!(tag5.id, five.id);
+        assert_eq!(1, five.tweets.len());
+
         Ok(())
     });
 }

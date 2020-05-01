@@ -7,7 +7,7 @@ use actix_web::{delete, get, patch, post, web, HttpResponse, Result as WebResult
 #[allow(unused_imports)]
 use log::{debug, error, info, warn};
 
-#[get("/tweets")]
+#[get("/tweets")] // returns OK(Vec<TweetDetail>)
 pub async fn get_tweets(pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
     let res = web::block(move || select_tweets(&conn))
@@ -19,7 +19,8 @@ pub async fn get_tweets(pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     Ok(HttpResponse::Ok().json(res))
 }
 
-#[post("/tweets")]
+// URLをPOST→oembed APIでHTMLを取得→DBに保存
+#[post("/tweets")] // returns NoContent
 pub async fn post_tweets(
     data: web::Json<PostTweet>,
     pool: web::Data<Pool>,
@@ -44,7 +45,7 @@ pub async fn post_tweets(
     Ok(HttpResponse::Ok().json(res))
 }
 
-#[get("/tweets/{tweet_id}")]
+#[get("/tweets/{tweet_id}")] // returns OK(TweetDetail)
 pub async fn get_tweets_id(
     tweet_id: web::Path<String>,
     pool: web::Data<Pool>,
@@ -59,17 +60,17 @@ pub async fn get_tweets_id(
     Ok(HttpResponse::Ok().json(res))
 }
 
-#[delete("/tweets/{tweet_id}")]
+#[delete("/tweets/{tweet_id}")] // returns NoContent
 pub async fn delete_tweets_id() -> WebResult<HttpResponse> {
     unimplemented!()
 }
 
-#[patch("/tweets/{tweet_id}")]
+#[patch("/tweets/{tweet_id}")] // returns NoContent
 pub async fn patch_tweets_id() -> WebResult<HttpResponse> {
     unimplemented!()
 }
 
-#[get("/tags")]
+#[get("/tags")] // returns OK(Vec<TagDetail>)
 pub async fn get_tags(pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
     let res = web::block(move || select_tags(&conn)).await.map_err(|e| {

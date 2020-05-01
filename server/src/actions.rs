@@ -39,6 +39,14 @@ pub fn select_tweets(conn: &DBConnection) -> QueryResult<Vec<Tweet>> {
     tweets.order(id.asc()).load(conn)
 }
 
+pub fn select_tweet_simples(conn: &DBConnection) -> QueryResult<Vec<TweetSimple>> {
+    unimplemented!()
+}
+
+pub fn select_tweet_details(conn: &DBConnection) -> QueryResult<Vec<TweetDetail>> {
+    unimplemented!()
+}
+
 pub fn insert_tag(tag_: &str, conn: &DBConnection) -> QueryResult<Tag> {
     use schema::tags::dsl::*;
 
@@ -72,6 +80,10 @@ pub fn predict_tag(query: &str, conn: &DBConnection) -> QueryResult<Vec<Tag>> {
 pub fn select_tags(conn: &DBConnection) -> QueryResult<Vec<Tag>> {
     use schema::tags::dsl::*;
     tags.order(id.asc()).load(conn)
+}
+
+pub fn select_tag_details(conn: &DBConnection) -> QueryResult<Vec<TagDetail>> {
+    unimplemented!()
 }
 
 // link inserted records(insert tweets_to_tags)
