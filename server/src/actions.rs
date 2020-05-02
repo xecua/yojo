@@ -40,11 +40,33 @@ pub fn select_tweets(conn: &DBConnection) -> QueryResult<Vec<Tweet>> {
 }
 
 pub fn select_tweet_simples(conn: &DBConnection) -> QueryResult<Vec<TweetSimple>> {
-    unimplemented!()
+    use schema::tweets::dsl::*;
+    tweets.order(id.asc()).select((id, html)).load(conn)
 }
 
 pub fn select_tweet_details(conn: &DBConnection) -> QueryResult<Vec<TweetDetail>> {
-    unimplemented!()
+    use schema::{tags::dsl::*, tweets::dsl::*};
+    let tweets_ = tweets.load::<Tweet>(conn)?;
+    let tweets_tags = TweetToTag::belonging_to(&tweets_)
+        .load::<TweetToTag>(conn)?
+        .grouped_by(&tweets_);
+    tweets_
+        .into_iter()
+        .zip(tweets_tags)
+        .map(|(tw, rel)| {
+            rel.into_iter()
+                .map(|r| tags.find(r.tags_id).first(conn))
+                .collect::<QueryResult<Vec<Tag>>>()
+                .and_then(|tags_| {
+                    Ok(TweetDetail {
+                        id: tw.id,
+                        html: tw.html,
+                        comment: tw.comment,
+                        tags: tags_,
+                    })
+                })
+        })
+        .collect::<QueryResult<Vec<TweetDetail>>>()
 }
 
 pub fn insert_tag(tag_: &str, conn: &DBConnection) -> QueryResult<Tag> {
@@ -83,7 +105,32 @@ pub fn select_tags(conn: &DBConnection) -> QueryResult<Vec<Tag>> {
 }
 
 pub fn select_tag_details(conn: &DBConnection) -> QueryResult<Vec<TagDetail>> {
-    unimplemented!()
+    use schema::{tags::dsl::*, tweets::dsl::*};
+    let tags_ = tags.load::<Tag>(conn)?;
+    let related_tweets = TweetToTag::belonging_to(&tags_)
+        .load::<TweetToTag>(conn)?
+        .grouped_by(&tags_);
+    tags_
+        .into_iter()
+        .zip(related_tweets)
+        .map(|(tg, rel)| {
+            rel.into_iter()
+                .map(|r| {
+                    tweets
+                        .find(r.tweets_id)
+                        .select((schema::tweets::id, html))
+                        .first(conn)
+                })
+                .collect::<QueryResult<Vec<TweetSimple>>>()
+                .and_then(|tweets_| {
+                    Ok(TagDetail {
+                        id: tg.id,
+                        content: tg.tag,
+                        tweets: tweets_,
+                    })
+                })
+        })
+        .collect::<QueryResult<Vec<TagDetail>>>()
 }
 
 // link inserted records(insert tweets_to_tags)

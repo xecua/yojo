@@ -32,13 +32,13 @@ pub struct TweetToTag {
 }
 
 // API Models
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Queryable, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TweetSimple {
     pub id: String,
     pub html: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Queryable, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TweetDetail {
     pub id: String,
     pub html: String,
@@ -58,7 +58,7 @@ pub struct PostTag {
     pub content: String,
 }
 
-#[derive(Debug, Serialize, Deserialize, PartialEq, Eq)]
+#[derive(Debug, Queryable, Serialize, Deserialize, PartialEq, Eq)]
 pub struct TagDetail {
     pub id: String,
     pub content: String,

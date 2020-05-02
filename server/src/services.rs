@@ -27,7 +27,7 @@ pub async fn post_tweets(
 ) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
     let res = web::block(move || {
-        let tweet = insert_tweet(&data.tweet_id, &data.comment, &conn)?;
+        let tweet = insert_tweet("", &data.comment, "", &conn)?;
         if let Err(e) = link_tweet_and_tags(
             &tweet.id,
             data.tags.iter().map(AsRef::as_ref).collect(),
