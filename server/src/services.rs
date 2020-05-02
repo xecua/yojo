@@ -8,7 +8,7 @@ use actix_web::{delete, get, patch, post, web, HttpResponse, Result as WebResult
 use log::{debug, error, info, warn};
 
 lazy_static::lazy_static! {
-    static ref TWEET_URL: regex::Regex = regex::Regex::new(r"https?://twitter\.com/.+?/(\d+).*)").unwrap();
+    static ref TWEET_URL: regex::Regex = regex::Regex::new(r"https?://twitter\.com/.+?/(\d+).*").unwrap();
 }
 
 #[get("/tweets")] // returns OK(Vec<TweetDetail>)
@@ -48,7 +48,7 @@ pub async fn post_tweets(
 
     let conn = pool.get().expect("Failed to establish connection");
     web::block(move || {
-        let id = (*TWEET_URL).find(&data.link).unwrap().as_str();
+        let id = &(*TWEET_URL).captures(&data.link).unwrap()[1];
         let tweet = insert_tweet(id, &data.comment, &html, &conn)?;
         if let Err(e) = link_tweet_and_tags(
             &tweet.id,
