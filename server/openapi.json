@@ -1,38 +1,46 @@
 {
-  "openapi" : "3.0.0",
-  "info" : {
-    "title" : "Simple Inventory API",
-    "description" : "This is a simple API\nhttps://dbdiagram.io/d/5ea2fc4f39d18f5553fe2936\n",
-    "version" : "1.0.0"
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Simple Inventory API",
+    "description": "This is a simple API\nhttps://dbdiagram.io/d/5ea2fc4f39d18f5553fe2936\n",
+    "version": "1.0.0"
   },
-  "servers" : [ {
-    "url" : "https://virtserver.swaggerhub.com/xecua9/yojo/1.0.0",
-    "description" : "SwaggerHub API Auto Mocking"
-  } ],
-  "tags" : [ {
-    "name" : "admins",
-    "description" : "Secured Admin-only calls"
-  }, {
-    "name" : "tweets",
-    "description" : "operate tweet"
-  }, {
-    "name" : "tags",
-    "description" : "operate tag"
-  } ],
-  "paths" : {
-    "/tweets" : {
-      "get" : {
-        "tags" : [ "tweets" ],
-        "summary" : "tweets list",
-        "responses" : {
-          "200" : {
-            "description" : "success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/TweetDetail"
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/xecua9/yojo/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    }
+  ],
+  "tags": [
+    {
+      "name": "admins",
+      "description": "Secured Admin-only calls"
+    },
+    {
+      "name": "tweets",
+      "description": "operate tweet"
+    },
+    {
+      "name": "tags",
+      "description": "operate tag"
+    }
+  ],
+  "paths": {
+    "/tweets": {
+      "get": {
+        "tags": [
+          "tweets"
+        ],
+        "summary": "tweets list",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TweetDetail"
                   }
                 }
               }
@@ -40,116 +48,133 @@
           }
         }
       },
-      "post" : {
-        "tags" : [ "tweets" ],
-        "summary" : "register tweet",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PostTweet"
+      "post": {
+        "tags": [
+          "tweets"
+        ],
+        "summary": "register tweet",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTweet"
               }
             }
           }
         },
-        "responses" : {
-          "204" : {
-            "description" : "success"
+        "responses": {
+          "204": {
+            "description": "success"
           }
         }
       }
     },
-    "/tweets/{tweetId}" : {
-      "get" : {
-        "tags" : [ "tweets" ],
-        "summary" : "tweet detail",
-        "parameters" : [ {
-          "name" : "tweetId",
-          "in" : "path",
-          "description" : "tweet id",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
+    "/tweets/{tweetId}": {
+      "get": {
+        "tags": [
+          "tweets"
+        ],
+        "summary": "tweet detail",
+        "parameters": [
+          {
+            "name": "tweetId",
+            "in": "path",
+            "description": "tweet id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
           }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/TweetDetail"
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TweetDetail"
                 }
               }
             }
           }
         }
       },
-      "delete" : {
-        "tags" : [ "tweets", "admins" ],
-        "summary" : "delete tweet",
-        "parameters" : [ {
-          "name" : "tweetId",
-          "in" : "path",
-          "description" : "tweet id",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
+      "delete": {
+        "tags": [
+          "tweets",
+          "admins"
+        ],
+        "summary": "delete tweet",
+        "parameters": [
+          {
+            "name": "tweetId",
+            "in": "path",
+            "description": "tweet id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
           }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "success"
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
           }
         }
       },
-      "patch" : {
-        "tags" : [ "tweets" ],
-        "summary" : "update tweet",
-        "parameters" : [ {
-          "name" : "tweetId",
-          "in" : "path",
-          "description" : "tweet id",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string"
+      "patch": {
+        "tags": [
+          "tweets"
+        ],
+        "summary": "update tweet",
+        "parameters": [
+          {
+            "name": "tweetId",
+            "in": "path",
+            "description": "tweet id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string"
+            }
           }
-        } ],
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PostTweet"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTweet"
               }
             }
           }
         },
-        "responses" : {
-          "204" : {
-            "description" : "success"
+        "responses": {
+          "204": {
+            "description": "success"
           }
         }
       }
     },
-    "/tags" : {
-      "get" : {
-        "tags" : [ "tags" ],
-        "summary" : "list of tags",
-        "responses" : {
-          "200" : {
-            "description" : "success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/TagDetail"
+    "/tags": {
+      "get": {
+        "tags": [
+          "tags"
+        ],
+        "summary": "list of tags",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TagDetail"
                   }
                 }
               }
@@ -157,25 +182,27 @@
           }
         }
       },
-      "post" : {
-        "tags" : [ "tags" ],
-        "summary" : "create tag",
-        "requestBody" : {
-          "content" : {
-            "application/json" : {
-              "schema" : {
-                "$ref" : "#/components/schemas/PostTag"
+      "post": {
+        "tags": [
+          "tags"
+        ],
+        "summary": "create tag",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PostTag"
               }
             }
           }
         },
-        "responses" : {
-          "200" : {
-            "description" : "success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Tag"
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Tag"
                 }
               }
             }
@@ -183,80 +210,93 @@
         }
       }
     },
-    "/tags/{tagId}" : {
-      "get" : {
-        "tags" : [ "tags" ],
-        "summary" : "tag detail",
-        "parameters" : [ {
-          "name" : "tagId",
-          "in" : "path",
-          "description" : "id of the tag",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+    "/tags/{tagId}": {
+      "get": {
+        "tags": [
+          "tags"
+        ],
+        "summary": "tag detail",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "id of the tag",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "found",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/TagDetail"
+        ],
+        "responses": {
+          "200": {
+            "description": "found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagDetail"
                 }
               }
             }
           }
         }
       },
-      "delete" : {
-        "tags" : [ "admins", "tags" ],
-        "summary" : "tag detail",
-        "parameters" : [ {
-          "name" : "tagId",
-          "in" : "path",
-          "description" : "id of the tag",
-          "required" : true,
-          "style" : "simple",
-          "explode" : false,
-          "schema" : {
-            "type" : "string",
-            "format" : "uuid"
+      "delete": {
+        "tags": [
+          "admins",
+          "tags"
+        ],
+        "summary": "tag detail",
+        "parameters": [
+          {
+            "name": "tagId",
+            "in": "path",
+            "description": "id of the tag",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
           }
-        } ],
-        "responses" : {
-          "204" : {
-            "description" : "success"
+        ],
+        "responses": {
+          "204": {
+            "description": "success"
           }
         }
       }
     },
-    "/tags/predict" : {
-      "get" : {
-        "tags" : [ "tags" ],
-        "summary" : "prediction",
-        "parameters" : [ {
-          "name" : "q",
-          "in" : "query",
-          "required" : false,
-          "style" : "form",
-          "explode" : true,
-          "schema" : {
-            "type" : "string"
+    "/tags/predict": {
+      "get": {
+        "tags": [
+          "tags"
+        ],
+        "summary": "prediction",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
           }
-        } ],
-        "responses" : {
-          "200" : {
-            "description" : "success",
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "type" : "array",
-                  "items" : {
-                    "$ref" : "#/components/schemas/Tag"
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Tag"
                   }
                 }
               }
@@ -266,97 +306,112 @@
       }
     }
   },
-  "components" : {
-    "schemas" : {
-      "TweetDetail" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "レコードのID",
-            "format" : "uuid"
+  "components": {
+    "schemas": {
+      "TweetDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "レコードのID",
+            "format": "uuid"
           },
-          "tweetid" : {
-            "type" : "string",
-            "description" : "ツイートのID"
+          "html": {
+            "type": "string",
+            "description": "body html",
           },
-          "comment" : {
-            "type" : "string",
-            "description" : "コメント"
+          "comment": {
+            "type": "string",
+            "description": "コメント"
           },
-          "tags" : {
-            "type" : "array",
-            "description" : "紐付いたタグ",
-            "items" : {
-              "$ref" : "#/components/schemas/Tag"
+          "tags": {
+            "type": "array",
+            "description": "紐付いたタグ",
+            "items": {
+              "$ref": "#/components/schemas/Tag"
             }
           }
         }
       },
-      "PostTweet" : {
-        "required" : [ "tweetid" ],
-        "type" : "object",
-        "properties" : {
-          "tweetid" : {
-            "type" : "string",
-            "description" : "ツイートのID"
+      "PostTweet": {
+        "required": [
+          "link"
+        ],
+        "type": "object",
+        "properties": {
+          "link": {
+            "type": "string",
+            "description": "ツイートのリンク"
           },
-          "comment" : {
-            "type" : "string",
-            "description" : "コメント"
+          "comment": {
+            "type": "string",
+            "description": "コメント"
           },
-          "tags" : {
-            "type" : "array",
-            "description" : "紐付けるタグのID",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
+          "tags": {
+            "type": "array",
+            "description": "紐付けるタグのID",
+            "items": {
+              "type": "string",
+              "format": "uuid"
             }
           }
         }
       },
-      "Tag" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "ID",
-            "format" : "uuid"
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID",
+            "format": "uuid"
           },
-          "content" : {
-            "type" : "string",
-            "description" : "内容"
+          "content": {
+            "type": "string",
+            "description": "内容"
           }
         }
       },
-      "PostTag" : {
-        "type" : "object",
-        "properties" : {
-          "content" : {
-            "type" : "string",
-            "description" : "タグ名"
+      "PostTag": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "タグ名"
           }
         }
       },
-      "TagDetail" : {
-        "type" : "object",
-        "properties" : {
-          "id" : {
-            "type" : "string",
-            "description" : "ID",
-            "format" : "uuid"
+      "TagDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID",
+            "format": "uuid"
           },
-          "content" : {
-            "type" : "string",
-            "description" : "内容"
+          "content": {
+            "type": "string",
+            "description": "内容"
           },
-          "tweets" : {
-            "type" : "array",
-            "description" : "紐付いたツイートのUUID",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
+          "tweets": {
+            "type": "array",
+            "description": "紐付いたツイート",
+            "items": {
+              "$ref": "#/components/schemas/TweetSimple"
             }
+          }
+        }
+      },
+      "TweetSimple": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "UUID",
+            "format": "uuid"
+          },
+          "html": {
+            "type": "string",
+            "description": "HTML"
           }
         }
       }
