@@ -3,6 +3,7 @@ use diesel::r2d2;
 use listenfd::ListenFd;
 use server::services::*;
 use server::DBConnection;
+use actix_cors::Cors;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
@@ -18,6 +19,7 @@ async fn main() -> std::io::Result<()> {
     let server = HttpServer::new(move || {
         App::new()
             .wrap(Logger::default())
+            .wrap(Cors::new().send_wildcard().finish())
             .data(pool.clone())
             .service(get_tweets)
             .service(post_tweets)
