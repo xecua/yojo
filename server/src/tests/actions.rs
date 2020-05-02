@@ -109,18 +109,30 @@ fn select_tweet_simples() {
         ];
         inserted.sort_by(|left, right| left.id.cmp(&right.id));
         let selected = select_tweet_simples(&conn)?;
-        assert_eq!(vec![
-            TweetSimple { id: inserted[0].id, html: inserted[0].html },
-            TweetSimple { id: inserted[1].id, html: inserted[1].html },
-            TweetSimple { id: inserted[2].id, html: inserted[2].html },
-        ], selected);
+        assert_eq!(
+            vec![
+                TweetSimple {
+                    id: inserted[0].id.to_owned(),
+                    html: inserted[0].html.to_owned()
+                },
+                TweetSimple {
+                    id: inserted[1].id.to_owned(),
+                    html: inserted[1].html.to_owned()
+                },
+                TweetSimple {
+                    id: inserted[2].id.to_owned(),
+                    html: inserted[2].html.to_owned()
+                },
+            ],
+            selected
+        );
         Ok(())
     });
 }
 
 #[test]
 fn select_tweet_details() {
-    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, select_tweet_details};
+    use crate::actions::{insert_tag, insert_tweet, link_tweet_and_tags, select_tweet_details};
     dotenv::dotenv().ok();
     let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
     let conn = DBConnection::establish(&database_url).unwrap();
@@ -139,18 +151,18 @@ fn select_tweet_details() {
         link_tweet_and_tags(&tweet3.id, vec![&tag3.id, &tag5.id], &conn)?;
         let selected = select_tweet_details(&conn)?;
         assert_eq!(3, selected.len());
-        let one = selected.iter().find(|&&x| x.comment == "1").unwrap();
+        let one = selected.iter().find(|&x| x.comment == "1").unwrap();
         assert_eq!("1", one.html);
         assert_eq!(tweet1.id, one.id);
         assert_eq!(3, one.tags.len());
-        let two = selected.iter().find(|&&x| x.comment == "2").unwrap();
-        assert_eq!("2", one.html);
+        let two = selected.iter().find(|&x| x.comment == "2").unwrap();
+        assert_eq!("2", two.html);
         assert_eq!(tweet2.id, two.id);
-        assert_eq!(3, one.tags.len());
-        let three = selected.iter().find(|&&x| x.comment == "3").unwrap();
-        assert_eq!("3", one.html);
+        assert_eq!(3, two.tags.len());
+        let three = selected.iter().find(|&x| x.comment == "3").unwrap();
+        assert_eq!("3", three.html);
         assert_eq!(tweet3.id, three.id);
-        assert_eq!(2, one.tags.len());
+        assert_eq!(2, three.tags.len());
         Ok(())
     });
 }
@@ -297,7 +309,7 @@ fn select_tags() {
 
 #[test]
 fn select_tag_details() {
-    use crate::actions::{insert_tweet, insert_tag, link_tweet_and_tags, select_tag_details};
+    use crate::actions::{insert_tag, insert_tweet, link_tweet_and_tags, select_tag_details};
     dotenv::dotenv().ok();
     let database_url = std::env::var("DATABASE_URL").expect("set DATABASE_URL");
     let conn = DBConnection::establish(&database_url).unwrap();
@@ -316,19 +328,19 @@ fn select_tag_details() {
         link_tweet_and_tags(&tweet3.id, vec![&tag3.id, &tag5.id], &conn)?;
         let selected = select_tag_details(&conn)?;
         assert_eq!(5, selected.len());
-        let one = selected.iter().find(|&&x| x.content == "1").unwrap();
+        let one = selected.iter().find(|&x| x.content == "1").unwrap();
         assert_eq!(tag1.id, one.id);
         assert_eq!(2, one.tweets.len());
-        let two = selected.iter().find(|&&x| x.content == "2").unwrap();
+        let two = selected.iter().find(|&x| x.content == "2").unwrap();
         assert_eq!(tag2.id, two.id);
         assert_eq!(1, two.tweets.len());
-        let three = selected.iter().find(|&&x| x.content == "3").unwrap();
+        let three = selected.iter().find(|&x| x.content == "3").unwrap();
         assert_eq!(tag3.id, three.id);
         assert_eq!(3, three.tweets.len());
-        let four = selected.iter().find(|&&x| x.content == "4").unwrap();
+        let four = selected.iter().find(|&x| x.content == "4").unwrap();
         assert_eq!(tag4.id, four.id);
         assert_eq!(1, four.tweets.len());
-        let five = selected.iter().find(|&&x| x.content == "5").unwrap();
+        let five = selected.iter().find(|&x| x.content == "5").unwrap();
         assert_eq!(tag5.id, five.id);
         assert_eq!(1, five.tweets.len());
 
