@@ -14,12 +14,7 @@ lazy_static::lazy_static! {
 #[get("/tweets")] // returns OK(Vec<TweetDetail>)
 pub async fn get_tweets(pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || select_tweet_details(&conn))
-        .await
-        .map_err(|e| {
-            error!("{}", e);
-            HttpResponse::InternalServerError().message_body(e);
-        })?;
+    let res = web::block(move || select_tweet_details(&conn)).await?;
     Ok(HttpResponse::Ok().json(res))
 }
 
@@ -69,12 +64,7 @@ pub async fn get_tweets_id(
     pool: web::Data<Pool>,
 ) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || select_tweet_by_id(&tweet_id, &conn))
-        .await
-        .map_err(|e| {
-            error!("{}", e);
-            HttpResponse::InternalServerError().message_body(e);
-        })?;
+    let res = web::block(move || select_tweet_by_id(&tweet_id, &conn)).await?;
     Ok(HttpResponse::Ok().json(res))
 }
 
@@ -91,22 +81,14 @@ pub async fn patch_tweets_id() -> WebResult<HttpResponse> {
 #[get("/tags")] // returns OK(Vec<TagDetail>)
 pub async fn get_tags(pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || select_tags(&conn)).await.map_err(|e| {
-        error!("{}", e);
-        HttpResponse::InternalServerError().message_body(e);
-    })?;
+    let res = web::block(move || select_tags(&conn)).await?;
     Ok(HttpResponse::Ok().json(res))
 }
 
 #[post("/tags")]
 pub async fn post_tags(data: web::Json<PostTag>, pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || insert_tag(&data.content, &conn))
-        .await
-        .map_err(|e| {
-            error!("{}", e);
-            HttpResponse::InternalServerError().message_body(e);
-        })?;
+    let res = web::block(move || insert_tag(&data.content, &conn)).await?;
     Ok(HttpResponse::Ok().json(res))
 }
 
@@ -116,12 +98,7 @@ pub async fn get_tags_id(
     pool: web::Data<Pool>,
 ) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || select_tag_by_id(&tag_id, &conn))
-        .await
-        .map_err(|e| {
-            error!("{}", e);
-            HttpResponse::InternalServerError().message_body(e);
-        })?;
+    let res = web::block(move || select_tag_by_id(&tag_id, &conn)).await?;
     Ok(HttpResponse::Ok().json(res))
 }
 
