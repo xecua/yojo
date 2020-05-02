@@ -64,3 +64,9 @@ pub struct TagDetail {
     pub content: String,
     pub tweets: Vec<TweetSimple>,
 }
+
+// Twitter API Response(needed field only)
+#[derive(Debug, Deserialize)]
+pub struct EmbedAPIResponse {
+    pub html: String
+}

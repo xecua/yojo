@@ -7,10 +7,14 @@ use actix_web::{delete, get, patch, post, web, HttpResponse, Result as WebResult
 #[allow(unused_imports)]
 use log::{debug, error, info, warn};
 
+lazy_static::lazy_static! {
+    static ref TWEET_URL: regex::Regex = regex::Regex::new(r"https?://twitter\.com/.+?/(\d+).*)").unwrap();
+}
+
 #[get("/tweets")] // returns OK(Vec<TweetDetail>)
 pub async fn get_tweets(pool: web::Data<Pool>) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || select_tweets(&conn))
+    let res = web::block(move || select_tweet_details(&conn))
         .await
         .map_err(|e| {
             error!("{}", e);
@@ -25,9 +29,27 @@ pub async fn post_tweets(
     data: web::Json<PostTweet>,
     pool: web::Data<Pool>,
 ) -> WebResult<HttpResponse> {
+    use std::collections::HashMap;
+
+    let mut query: HashMap<&str, &str> = HashMap::new();
+    query.insert("url", &data.link);
+    query.insert("lang", "ja");
+    query.insert("omit_script", "t");
+
+    let html = actix_web::client::Client::default()
+        .get("https://publish.twitter.com/oembed")
+        .query(&query)
+        .unwrap()
+        .send()
+        .await?
+        .json::<EmbedAPIResponse>()
+        .await?
+        .html;
+
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || {
-        let tweet = insert_tweet("", &data.comment, "", &conn)?;
+    web::block(move || {
+        let id = (*TWEET_URL).find(&data.link).unwrap().as_str();
+        let tweet = insert_tweet(id, &data.comment, &html, &conn)?;
         if let Err(e) = link_tweet_and_tags(
             &tweet.id,
             data.tags.iter().map(AsRef::as_ref).collect(),
@@ -37,12 +59,8 @@ pub async fn post_tweets(
         }
         Ok(tweet)
     })
-    .await
-    .map_err(|e| {
-        error!("{}", e);
-        HttpResponse::InternalServerError().message_body(e);
-    })?;
-    Ok(HttpResponse::Ok().json(res))
+    .await?;
+    Ok(HttpResponse::NoContent().finish())
 }
 
 #[get("/tweets/{tweet_id}")] // returns OK(TweetDetail)
