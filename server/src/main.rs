@@ -1,5 +1,6 @@
-use actix_web::{App, HttpServer};
+use actix_web::{middleware::Logger, App, HttpServer};
 use diesel::r2d2;
+use listenfd::ListenFd;
 use server::services::*;
 use server::DBConnection;
 
@@ -10,8 +11,13 @@ async fn main() -> std::io::Result<()> {
     let manager = r2d2::ConnectionManager::<DBConnection>::new(database_url);
     let pool = r2d2::Pool::builder().build_unchecked(manager);
 
-    HttpServer::new(move || {
+    std::env::set_var("RUST_LOG", "DEBUG");
+    env_logger::init();
+
+    let mut listenfd = ListenFd::from_env();
+    let server = HttpServer::new(move || {
         App::new()
+            .wrap(Logger::default())
             .data(pool.clone())
             .service(get_tweets)
             .service(post_tweets)
@@ -20,8 +26,13 @@ async fn main() -> std::io::Result<()> {
             .service(post_tags)
             .service(get_tags_id)
             .service(get_tags_predict)
-    })
-    .bind("127.0.0.1:3000")?
+    });
+
+    if let Some(l) = listenfd.take_tcp_listener(0).unwrap() {
+        server.listen(l)?
+    } else {
+        server.bind("127.0.0.1:3000")?
+    }
     .run()
     .await
 }
