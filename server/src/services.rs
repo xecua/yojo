@@ -69,7 +69,7 @@ pub async fn get_tweets_id(
     pool: web::Data<Pool>,
 ) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || select_tweet_by_tweet_id(&tweet_id, &conn))
+    let res = web::block(move || select_tweet_by_id(&tweet_id, &conn))
         .await
         .map_err(|e| {
             error!("{}", e);
