@@ -132,15 +132,10 @@ pub async fn delete_tags_id() -> WebResult<HttpResponse> {
 
 #[get("/tags/predict")]
 pub async fn get_tags_predict(
-    query: web::Query<String>,
+    web::Query(query): web::Query<SimpleQuery>,
     pool: web::Data<Pool>,
 ) -> WebResult<HttpResponse> {
     let conn = pool.get().expect("Failed to establish connection");
-    let res = web::block(move || predict_tag(&query, &conn))
-        .await
-        .map_err(|e| {
-            error!("{}", e);
-            HttpResponse::InternalServerError().message_body(e);
-        })?;
+    let res = web::block(move || predict_tag(&query.q, &conn)).await?;
     Ok(HttpResponse::Ok().json(res))
 }

@@ -65,6 +65,11 @@ pub struct TagDetail {
     pub tweets: Vec<TweetSimple>,
 }
 
+#[derive(Debug, serde_derive::Deserialize)]
+pub struct SimpleQuery {
+    pub q: String,
+}
+
 // Twitter API Response(needed field only)
 #[derive(Debug, Deserialize)]
 pub struct EmbedAPIResponse {

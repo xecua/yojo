@@ -24,8 +24,8 @@ async fn main() -> std::io::Result<()> {
             .service(get_tweets_id)
             .service(get_tags)
             .service(post_tags)
-            .service(get_tags_id)
             .service(get_tags_predict)
+            .service(get_tags_id)
     });
 
     if let Some(l) = listenfd.take_tcp_listener(0).unwrap() {
