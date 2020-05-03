@@ -1,12 +1,37 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link>
-      <router-link to="/about">About</router-link>
+    <div class="container">
+      <register-form></register-form>
     </div>
-    <router-view />
+    <div class="container">
+      <div v-for="(tweet, i) in tweets" :key="i">
+        <tweet-card :html="tweet.html"></tweet-card>
+      </div>
+    </div>
   </div>
 </template>
+
+<script>
+import RegisterForm from '@/components/RegisterForm';
+import TweetCard from '@/components/TweetCard';
+
+export default {
+  data() {
+    return {
+      tweets: [] // TweetDetail[]
+    };
+  },
+  created() {
+    this.$axios.get('/tweets').then(resp => {
+      this.tweets = resp.data;
+    });
+  },
+  components: {
+    RegisterForm,
+    TweetCard
+  }
+};
+</script>
 
 <style lang="stylus">
 #app

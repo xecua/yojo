@@ -1,5 +1,5 @@
 <template>
-  <span v-html="this.props.html"></span>
+  <span v-html="this.html"></span>
 </template>
 
 <script>
