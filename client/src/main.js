@@ -3,6 +3,7 @@ import App from './App.vue';
 import axios from './axios';
 import Buefy from 'buefy';
 import 'buefy/dist/buefy.css';
+import '@mdi/font/css/materialdesignicons.css';
 
 Vue.config.productionTip = false;
 Vue.use(axios);
