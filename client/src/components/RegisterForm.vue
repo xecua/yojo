@@ -22,21 +22,21 @@
       <div class="card-content">
         <b-field
           horizontal
-          label="link">
+          label="ツイートのURL">
           <b-input
             v-model="link"
-            placeholder="https://twitter.com/trapyojo/..." />
+            placeholder="https://twitter.com/trapyojo/status/..." />
         </b-field>
         <b-field
           horizontal
-          label="comment">
+          label="コメント">
           <b-input
             v-model="comment"
             type="textarea" />
         </b-field>
         <b-field
           horizontal
-          label="tags">
+          label="タグ">
           <b-taginput
             v-model="selectedTags"
             autocomplete
@@ -46,7 +46,7 @@
             @typing="getFilteredTags" />
         </b-field>
         <b-button @click="postData">
-          Register
+          登録
         </b-button>
       </div>
     </b-collapse>

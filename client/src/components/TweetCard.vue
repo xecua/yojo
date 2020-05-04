@@ -5,14 +5,14 @@
       v-html="$sanitize(html)" />
     <div class="tile is-parent is-vertical has-text-left">
       <div class="tile is-child">
-        <h5 class="is-size-5">
-          Comment
+        <h5 class="is-size-5 has-text-weight-bold">
+          コメント
         </h5>
         <p>{{ comment }}</p>
       </div>
       <div class="tile is-child">
-        <h5 class="is-size-5">
-          Tag
+        <h5 class="is-size-5 has-text-weight-bold">
+          タグ
         </h5>
         <b-taglist
           v-for="(tag, i) in tags"
