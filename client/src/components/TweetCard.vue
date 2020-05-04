@@ -15,9 +15,13 @@
           Tag
         </h5>
         <b-taglist
-          v-for="(tagName, i) in tagNames"
+          v-for="(tag, i) in tags"
           :key="i">
-          <b-tag>{{ tagName }}</b-tag>
+          <b-tag
+            class="search-tag"
+            @click.native="$emit('tag-clicked', tag)">
+            {{ tag.tag }}
+          </b-tag>
         </b-taglist>
       </div>
     </div>
@@ -42,11 +46,11 @@ export default {
       type: Array,
       default: () => []
     }
-  },
-  computed: {
-    tagNames() {
-      return this.tags.map(t => t.tag);
-    }
   }
 };
 </script>
+
+<style lang="stylus" scoped>
+.search-tag
+  cursor: pointer
+</style>

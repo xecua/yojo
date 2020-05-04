@@ -17,7 +17,8 @@
           <template v-for="(tweet, i) in filteredTweets">
             <tweet-card
               :key="i"
-              v-bind="tweet" />
+              v-bind="tweet"
+              @tag-clicked="onTagClicked" />
           </template>
         </div>
       </section>
@@ -34,7 +35,8 @@
           <template v-for="(tweet, i) in tweets">
             <tweet-card
               :key="i"
-              v-bind="tweet" />
+              v-bind="tweet"
+              @tag-clicked="onTagClicked" />
           </template>
         </div>
       </section>
@@ -59,13 +61,23 @@ export default {
   },
   computed: {
     filteredTweets() {
-      const parser = new DOMParser();
-      return this.tweets.filter(tweet => 
-        parser.parseFromString(tweet.html, 'text/html')
-          .getElementsByTagName('p')[0]
-          .innerText
-          .includes(this.searchQuery)
-      );
+      if (/^tag-id:.*/i.test(this.searchQuery)) {
+        // タグID検索
+        const id = this.searchQuery.slice(7);
+        return this.tweets.filter(tweet => tweet.tags.filter(tag => tag.id === id).length > 0);
+      } else if (/^tag:.*/i.test(this.searchQuery)) {
+        const query = this.searchQuery.slice(4);
+        return this.tweets.filter(tweet => tweet.tags.filter(tag => tag.tag.includes(query)).length > 0);
+      } else {
+        // テキスト検索
+        const parser = new DOMParser();
+        return this.tweets.filter(tweet => 
+          parser.parseFromString(tweet.html, 'text/html')
+            .getElementsByTagName('p')[0]
+            .innerText
+            .includes(this.searchQuery)
+        );
+      }
     }
   },
   created() {
@@ -79,6 +91,9 @@ export default {
     }
   },
   methods: {
+    onTagClicked(tag) {
+      this.searchQuery = `tag-id:${tag.id}`;
+    },
     updateTweet() {
       this.$axios.get('/tweets').then(resp => {
         this.tweets = resp.data;
