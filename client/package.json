@@ -21,6 +21,7 @@
     "axios": "^0.19.2",
     "buefy": "^0.8.17",
     "core-js": "^3.6.4",
+    "sanitize-html": "^1.23.0",
     "vue": "^2.6.11"
   },
   "devDependencies": {

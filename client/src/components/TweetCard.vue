@@ -2,7 +2,7 @@
   <div class="tile is-ancestor">
     <div
       class="tile is-child has-text-right"
-      v-html="html" />
+      v-html="$sanitize(html)" />
     <div class="tile is-parent is-vertical has-text-left">
       <div class="tile is-child">
         <h5 class="is-size-5">
