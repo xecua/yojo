@@ -1,15 +1,25 @@
 <template>
-  <div class="columns is-vcentered">
+  <div class="tile is-ancestor">
     <div
-      class="column"
+      class="tile is-child has-text-right"
       v-html="html" />
-    <div class="column has-text-left">
-      <div>{{ comment }}</div>
-      <b-taglist
-        v-for="(tagName, i) in tagNames"
-        :key="i">
-        <b-tag>{{ tagName }}</b-tag>
-      </b-taglist>
+    <div class="tile is-parent is-vertical has-text-left">
+      <div class="tile is-child">
+        <h5 class="is-size-5">
+          Comment
+        </h5>
+        <p>{{ comment }}</p>
+      </div>
+      <div class="tile is-child">
+        <h5 class="is-size-5">
+          Tag
+        </h5>
+        <b-taglist
+          v-for="(tagName, i) in tagNames"
+          :key="i">
+          <b-tag>{{ tagName }}</b-tag>
+        </b-taglist>
+      </div>
     </div>
   </div>
 </template>
