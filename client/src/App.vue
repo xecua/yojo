@@ -38,6 +38,8 @@ export default {
     updateTweet() {
       this.$axios.get('/tweets').then(resp => {
         this.tweets = resp.data;
+        // eslint-disable-next-line no-undef
+        twttr.widgets.load(); // from widgets.js
       });
     }
   }
