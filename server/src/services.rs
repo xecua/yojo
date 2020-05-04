@@ -8,7 +8,7 @@ use actix_web::{delete, get, patch, post, web, HttpResponse, Result as WebResult
 use log::{debug, error, info, warn};
 
 lazy_static::lazy_static! {
-    static ref TWEET_URL: regex::Regex = regex::Regex::new(r"https?://twitter\.com/.+?/(\d+).*").unwrap();
+    static ref TWEET_URL: regex::Regex = regex::Regex::new(r"https?://twitter\.com/trapyojo/status/(\d+).*").unwrap();
 }
 
 #[get("/tweets")] // returns OK(Vec<TweetDetail>)
