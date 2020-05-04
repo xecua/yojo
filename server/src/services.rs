@@ -42,17 +42,15 @@ pub async fn post_tweets(
         .html;
 
     let conn = pool.get().expect("Failed to establish connection");
-    web::block(move || {
+    web::block::<_, _, diesel::result::Error>(move || {
         let id = &(*TWEET_URL).captures(&data.link).unwrap()[1];
         let tweet = insert_tweet(id, &data.comment, &html, &conn)?;
-        if let Err(e) = link_tweet_and_tags(
+        link_tweet_and_tags(
             &tweet.id,
             data.tags.iter().map(AsRef::as_ref).collect(),
             &conn,
-        ) {
-            return Err(e);
-        }
-        Ok(tweet)
+        )?;
+        Ok(())
     })
     .await?;
     Ok(HttpResponse::NoContent().finish())

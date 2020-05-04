@@ -1,13 +1,17 @@
 <template>
   <div id="app">
-    <div class="container">
-      <register-form></register-form>
-    </div>
-    <div class="container">
-      <div v-for="(tweet, i) in tweets" :key="i">
-        <tweet-card :html="tweet.html"></tweet-card>
+    <section class="section">
+      <div class="container">
+        <register-form></register-form>
       </div>
-    </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <template v-for="(tweet, i) in tweets">
+          <tweet-card :key="i" v-bind="tweet"></tweet-card>
+        </template>
+      </div>
+    </section>
   </div>
 </template>
 
@@ -24,6 +28,7 @@ export default {
   created() {
     this.$axios.get('/tweets').then(resp => {
       this.tweets = resp.data;
+      console.log(resp.data);
     });
   },
   components: {
