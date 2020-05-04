@@ -3,7 +3,7 @@ name: master
 on:
   push:
     branches:
-    - master
+      - master
 
 jobs:
   build:
@@ -15,24 +15,25 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: root
         ports:
-        - 3306
+          - 3306
+
+    env:
+      DATABASE_URL: "mysql://root:root@127.0.0.1/test"
+      RUST_LOG: debug
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Setup
-      env:
-        DATABASE_URL: "mysql://root:root@127.0.0.1/test"
-        RUST_LOG: debug
-      run: |
-        sudo apt update
-        sudo apt install -y libmysqlclient-dev
-        diesel setup
-        diesel migration run
-    - name: Build
-      run: cargo build --verbose
-      env:
-        DATABASE_URL: "mysql://root:root@127.0.0.1/test"
-        RUST_LOG: debug
-    - name: Run tests
-      run: cargo test --verbose
-
+      - uses: actions/checkout@v1
+      - name: Setup
+        working-directory: ./server
+        run: |
+          sudo apt update
+          sudo apt install -y libmysqlclient-dev libsqlite3-dev
+          cargo install diesel_cli --no-default-features --features "mysql sqlite"
+          diesel setup
+          diesel migration run
+      - name: Build
+        working-directory: ./server
+        run: cargo build --verbose
+      - name: Run tests
+        working-directory: ./server
+        run: cargo test --verbose
