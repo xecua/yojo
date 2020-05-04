@@ -73,8 +73,13 @@ export default {
         t => t.tag.toLowerCase().indexOf(text.toLowerCase()) >= 0
       );
     },
-    postData() {
-      Promise.all(
+    updateTags() {
+      this.$axios.get('/tags').then(resp => {
+        this.tagCandidates = resp.data;
+      });
+    },
+    async postData() {
+      const d = await Promise.all(
         this.selectedTags.map(t => {
           if (typeof t === 'string') {
             // 新規
@@ -82,22 +87,25 @@ export default {
               .post('/tags', {
                 content: t
               })
-              .then(resp => resp.data.id);
+              .then(resp => new Promise(resolve => resolve(resp.data.id)));
           } else {
-            new Promise(resolve => resolve(t.id));
+            return new Promise(resolve => resolve(t.id));
           }
         })
-      ).then(d => {
-        this.$axios
-          .post('/tweets', {
-            link: this.link,
-            comment: this.comment,
-            tags: d
-          })
-          .then(resp => {
-            console.log(resp);
-          });
-      });
+      );
+      this.$axios
+        .post('/tweets', {
+          link: this.link,
+          comment: this.comment,
+          tags: d
+        })
+        .then(() => {
+          this.link = '';
+          this.comment = '';
+          this.selectedTags = [];
+          this.updateTags();
+          this.$emit('tweet-posted');
+        });
     }
   }
 };
