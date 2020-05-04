@@ -73,7 +73,10 @@ export default {
   },
   updated() {
     // eslint-disable-next-line no-undef
-    twttr.widgets.load(); // from widgets.js
+    if (typeof twttr !== 'undefined') {
+      // eslint-disable-next-line no-undef
+      twttr.widgets.load(); // from widgets.js
+    }
   },
   methods: {
     updateTweet() {
