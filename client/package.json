@@ -4,8 +4,17 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "build": "yarn lint && vue-cli-service build",
+    "lint": "vue-cli-service lint -c no-console"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,vue}": [
+      "vue-cli-service lint",
+      "git add"
+    ]
   },
   "dependencies": {
     "@mdi/font": "^5.1.45",
@@ -31,6 +40,9 @@
     "env": {
       "node": true
     },
+    "plugins": [
+      "vue"
+    ],
     "extends": [
       "plugin:vue/recommended",
       "eslint:recommended"
@@ -39,15 +51,32 @@
       "parser": "babel-eslint"
     },
     "rules": {
+      "vue/html-closing-bracket-newline": [
+        2,
+        {
+          "multiline": "never"
+        }
+      ],
+      "vue/no-v-html": 0,
+      "no-multi-spaces": 2,
+      "func-call-spacing": [
+        2,
+        "never"
+      ],
+      "no-unneeded-ternary": 2,
       "quotes": [
-        "error",
+        2,
         "single"
       ],
-      "prettier/prettier": [
-        "error",
-        {
-          "singleQuote": true
-        }
+      "no-var": 2,
+      "indent": [
+        2,
+        2
+      ],
+      "no-extra-parens": 1,
+      "semi": [
+        2,
+        "always"
       ]
     }
   },

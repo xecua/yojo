@@ -2,13 +2,15 @@
   <div id="app">
     <section class="section">
       <div class="container">
-        <register-form></register-form>
+        <register-form />
       </div>
     </section>
     <section class="section">
       <div class="container">
         <template v-for="(tweet, i) in tweets">
-          <tweet-card :key="i" v-bind="tweet"></tweet-card>
+          <tweet-card
+            :key="i"
+            v-bind="tweet" />
         </template>
       </div>
     </section>
@@ -20,6 +22,10 @@ import RegisterForm from '@/components/RegisterForm';
 import TweetCard from '@/components/TweetCard';
 
 export default {
+  components: {
+    RegisterForm,
+    TweetCard
+  },
   data() {
     return {
       tweets: [] // TweetDetail[]
@@ -30,10 +36,6 @@ export default {
       this.tweets = resp.data;
       console.log(resp.data);
     });
-  },
-  components: {
-    RegisterForm,
-    TweetCard
   }
 };
 </script>
