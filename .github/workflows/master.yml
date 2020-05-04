@@ -26,6 +26,7 @@ jobs:
       - name: Setup
         working-directory: ./server
         run: |
+          sudo /etc/init.d/mysql start
           sudo apt update
           sudo apt install -y libmysqlclient-dev libsqlite3-dev
           cargo install diesel_cli --no-default-features --features "mysql sqlite"
