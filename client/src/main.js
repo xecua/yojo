@@ -6,7 +6,6 @@ import 'buefy/dist/buefy.css';
 import '@mdi/font/css/materialdesignicons.css';
 
 Vue.config.productionTip = false;
-Vue.use(axios);
 Vue.use(Buefy);
 
 Vue.prototype.$axios = axios;

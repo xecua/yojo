@@ -1,6 +1,5 @@
-import __axios__ from 'axios';
+import axios from 'axios';
 
-const axios = __axios__;
-axios.defaults.baseURL = 'http://localhost:3000';
-
-export default axios;
+export default axios.create({
+  baseURL: 'http://localhost:3000'
+});
