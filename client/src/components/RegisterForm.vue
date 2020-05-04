@@ -65,9 +65,7 @@ export default {
     };
   },
   mounted() {
-    this.$axios.get('/tags').then(resp => {
-      this.tagCandidates = resp.data;
-    });
+    this.updateTags();
   },
   methods: {
     getFilteredTags(text) {

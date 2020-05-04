@@ -35,9 +35,7 @@ export default {
   },
   computed: {
     tagNames() {
-      const res = this.tags.map(t => t.tag);
-      console.log(res);
-      return res;
+      return this.tags.map(t => t.tag);
     }
   }
 };

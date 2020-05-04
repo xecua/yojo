@@ -2,7 +2,7 @@
   <div id="app">
     <section class="section">
       <div class="container">
-        <register-form />
+        <register-form @tweet-posted="updateTweet" />
       </div>
     </section>
     <section class="section">
@@ -32,10 +32,14 @@ export default {
     };
   },
   created() {
-    this.$axios.get('/tweets').then(resp => {
-      this.tweets = resp.data;
-      console.log(resp.data);
-    });
+    this.updateTweet();
+  },
+  methods: {
+    updateTweet() {
+      this.$axios.get('/tweets').then(resp => {
+        this.tweets = resp.data;
+      });
+    }
   }
 };
 </script>
