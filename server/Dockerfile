@@ -2,7 +2,7 @@
 FROM rust:1.43 as builder
 WORKDIR /app
 RUN apt install default-libmysqlclient-dev && \
-    cargo install diesel_cli --no-default-features --features mysql && \
+    cargo install diesel_cli --no-default-features --features mysql
 COPY . .
 RUN cargo install --path .
 
