@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  server:
+    build: .
+    working_dir: /app
+    ports:
+      - 8002:3000
+    networks:
+      - database
+    command:
+      - /bin/sh
+      - -c
+      - |
+        diesel migration run
+        /usr/local/bin/myapp
+
+networks:
+  database:
+    external: true
