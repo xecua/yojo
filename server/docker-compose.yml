@@ -1,4 +1,4 @@
-version: '3'
+version: '3.8'
 
 services:
   server:
@@ -8,6 +8,9 @@ services:
       - 8002:3000
     networks:
       - database
+    env_file:
+      - .env
+    restart: unless-stopped
     command:
       - /bin/sh
       - -c
