@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "yarn lint && vue-cli-service build",
-    "lint": "vue-cli-service lint -c no-console"
+    "lint": "vue-cli-service lint --rule 'no-console: 'error''"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
